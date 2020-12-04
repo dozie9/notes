@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 
 function AllNotes() {
     const [notes, setNote] = useState([]);
+    const url = `https://warm-beyond-77036.herokuapp.com/note/`;
 
     useEffect(() => {
         fetch(url)
@@ -19,7 +20,6 @@ function AllNotes() {
             // console.log(notes)
         })
     }, [])
-    const url = `https://warm-beyond-77036.herokuapp.com/note/`;
 
     const handleDelete = (e) => {
         // console.log(e.target.value)
