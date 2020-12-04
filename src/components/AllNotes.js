@@ -1,12 +1,13 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import {Link} from "react-router-dom";
 import {ToastsContainer, ToastsStore} from 'react-toasts'
 
 
 function AllNotes() {
     const [notes, setNote] = useState([]);
-    const url = `https://warm-beyond-77036.herokuapp.com/note/`;
-    const fetchNotes = () => {
+
+    const fetchNotes = useCallback(() => {
+        const url = `https://warm-beyond-77036.herokuapp.com/note/`;
         fetch(url)
             .then(response => {
                 if (response.status >= 200 && response.status <= 299) {
@@ -19,11 +20,11 @@ function AllNotes() {
                 setNote(data);
                 // console.log(notes)
             })
-    }
+    }, [])
 
     useEffect(() => {
         fetchNotes()
-    }, [])
+    }, [fetchNotes])
 
     const handleDelete = (e) => {
         console.log(e.target.value)
