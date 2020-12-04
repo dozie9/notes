@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {Redirect} from 'react-router-dom'
 
 const EditNote = ({match, history}) => {
 
 
     const [note, setNote] = useState({});
     useEffect(() => {
-        const url = `https://warm-beyond-77036.herokuapp.com/note/${match.params.id}/`;
+        const id = match.params.id
+        const url = `https://warm-beyond-77036.herokuapp.com/note/${id}/`;
         fetch(url)
             .then(response => {
                 if (response.status >= 200 && response.status <= 299) {
@@ -24,7 +24,7 @@ const EditNote = ({match, history}) => {
 
             })
 
-    }, [])
+    }, [match.params.id])
 
 
     const handleSubmit = (e) => {
