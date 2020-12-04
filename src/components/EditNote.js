@@ -3,10 +3,10 @@ import {Redirect} from 'react-router-dom'
 
 const EditNote = ({match, history}) => {
 
-    const url = `https://warm-beyond-77036.herokuapp.com/note/${match.params.id}/`;
 
     const [note, setNote] = useState({});
     useEffect(() => {
+        const url = `https://warm-beyond-77036.herokuapp.com/note/${match.params.id}/`;
         fetch(url)
             .then(response => {
                 if (response.status >= 200 && response.status <= 299) {
@@ -29,6 +29,7 @@ const EditNote = ({match, history}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        const url = `https://warm-beyond-77036.herokuapp.com/note/${match.params.id}/`;
         fetch(url, {
             method: 'PUT',
             headers: {
