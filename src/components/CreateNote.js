@@ -5,17 +5,38 @@ function CreateNote() {
     const url = `https://warm-beyond-77036.herokuapp.com/note/`;
 
 
-
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log(note)
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(note),
+        })
+            .then(response => {
+                if (response.status >= 200 && response.status <= 299) {
+                    return response.json()
+                } else {
+                    throw new Error(response.statusText)
+                }
+            })
+            .then(data => {
+                console.log('Success:', data)
+            })
+            .catch((error) => {
+                console.error('Error:', error)
+                return error
+            });
+        // console.log(note)
     }
 
     const handleChange = (e) => {
         let target = e.target
-        setNote({
-            [target.name]: target.value
+        setNote(prevState => {
+            return {...prevState, [target.name]: target.value}
         })
+
         console.log(note)
 
     }
