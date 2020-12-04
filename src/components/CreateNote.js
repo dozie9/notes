@@ -1,13 +1,16 @@
 import React, {useState} from 'react'
+import {ToastsContainer, ToastsStore} from 'react-toasts'
+import axios from 'axios'
 
-function CreateNote() {
+function CreateNote({history}) {
     const [note, setNote] = useState({});
+    const [error, setError] = useState({});
     const url = `https://warm-beyond-77036.herokuapp.com/note/`;
 
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        fetch(url, {
+        /*fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -23,12 +26,27 @@ function CreateNote() {
             })
             .then(data => {
                 console.log('Success:', data)
+                ToastsStore.success(`Your note has been added`)
+                history.push('/')
             })
             .catch((error) => {
                 console.error('Error:', error)
                 return error
             });
-        // console.log(note)
+        // console.log(note)*/
+        axios.post(url, note)
+            .then(res => {
+                ToastsStore.success(`Your note has been added`)
+                history.push('/')
+            })
+            .catch(err => {
+                if (err.response) {
+                    setError(prevState => {
+                        return err.response.data
+                    })
+                }
+                console.log(error)
+            })
     }
 
     const handleChange = (e) => {
@@ -37,20 +55,33 @@ function CreateNote() {
             return {...prevState, [target.name]: target.value}
         })
 
-        console.log(note)
+        // console.log(note)
 
     }
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Title: <input onChange={handleChange} type={'text'} name={'title'} id={'title'}/>
-                </label>
-                <label>
-                    Note: <textarea onChange={handleChange} name={'note'} id={'note'}/>
-                </label>
-                <button>submit</button>
+        <div className={'continer'}>
+            <ToastsContainer store={ToastsStore}/>
+            <form className={'col-sm-6 needs-validation'} onSubmit={handleSubmit}>
+
+                <div className="form-group">
+                    <label htmlFor="title">Title</label>
+                    <input onChange={handleChange} type={'text'} required={true} name={'title'} id={'title'} className="form-control" aria-describedby="emailHelp"
+                           placeholder="Title"/>
+                    <div className="invalid-feedback">
+                        {error.title}
+                    </div>
+
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="note">Note</label>
+                    <textarea className="form-control" required={true} onChange={handleChange} name={'note'} id={'note'} rows="3"/>
+                    <div className="invalid-feedback">
+                        {error.note}
+                    </div>
+                </div>
+                <button className={'btn btn-primary'}>submit</button>
             </form>
         </div>
     )

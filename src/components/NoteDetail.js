@@ -22,10 +22,10 @@ function NoteDetail({match}) {
 
 
     return (
-        <>
+        <div className={'container'}>
             <h1>{note.title}</h1>
             <div>{note.note}</div>
-        </>
+        </div>
     )
 
 }

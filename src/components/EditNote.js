@@ -1,9 +1,12 @@
 import React, {useState, useEffect} from 'react';
+import {ToastsContainer, ToastsStore} from "react-toasts";
+import axios from "axios";
 
 const EditNote = ({match, history}) => {
 
 
     const [note, setNote] = useState({});
+    const [error, setError] = useState({});
     useEffect(() => {
         const id = match.params.id
         const url = `https://warm-beyond-77036.herokuapp.com/note/${id}/`;
@@ -30,7 +33,7 @@ const EditNote = ({match, history}) => {
     const handleSubmit = (e) => {
         e.preventDefault()
         const url = `https://warm-beyond-77036.herokuapp.com/note/${match.params.id}/`;
-        fetch(url, {
+       /* fetch(url, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -45,7 +48,21 @@ const EditNote = ({match, history}) => {
             .catch((error) => {
                 console.error('Error:', error)
             });
-        // console.log(note)
+        // console.log(note)*/
+
+        axios.put(url, note)
+            .then(res => {
+                ToastsStore.success(`Your note has been updated`)
+                history.push('/')
+            })
+            .catch(err => {
+                if (err.response) {
+                    setError(prevState => {
+                        return err.response.data
+                    })
+                }
+                console.log(error)
+            })
     }
 
     const handleChange = (e) => {
@@ -56,15 +73,28 @@ const EditNote = ({match, history}) => {
     }
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Title: <input onChange={handleChange} type={'text'} name={'title'} value={note.title} id={'title'}/>
-                </label>
-                <label>
-                    Note: <textarea onChange={handleChange} name={'note'} value={note.note} id={'note'}/>
-                </label>
-                <button>submit</button>
+        <div className={'continer'}>
+            <ToastsContainer store={ToastsStore}/>
+            <form className={'col-sm-6 needs-validation'} onSubmit={handleSubmit}>
+
+                <div className="form-group">
+                    <label htmlFor="title">Title</label>
+                    <input onChange={handleChange} type={'text'} required={true} name={'title'} id={'title'} className="form-control" value={note.title}
+                           placeholder="Title"/>
+                    <div className="invalid-feedback">
+                        {error.title}
+                    </div>
+
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="note">Note</label>
+                    <textarea className="form-control" required={true} onChange={handleChange} name={'note'} id={'note'} value={note.note} rows="3"/>
+                    <div className="invalid-feedback">
+                        {error.note}
+                    </div>
+                </div>
+                <button className={'btn btn-primary'}>submit</button>
             </form>
         </div>
     )
